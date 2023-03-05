@@ -2,21 +2,17 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-let productSchema = new Schema(
+let projectSchema = new Schema(
 {
-    name: {type: String},
+    title: {type: String, required: true, min: 2, max: 30},
+    members: {type: String},
     description: {type: String},
-    price: {type: Number},
-    inStock: {type: Boolean}
-}
-    //name: string
-    //description: string
-    //price: number
-    //inStock: boolean
-    
-);
+    createdDate: {type: Date, default: Date.now},
+    public: {type: Boolean, default: true},
+    active: {type: Boolean, default: true}
+});
 
-productSchema.pre('findOneAndUpdate', function() {
+projectSchema.pre('findOneAndUpdate', function() {
     const update = this.getUpdate();
     if (update.__v != null) {
       delete update.__v;
@@ -34,4 +30,4 @@ productSchema.pre('findOneAndUpdate', function() {
     update.$inc.__v = 1;
   });
 
-module.exports = mongoose.model("product", productSchema);
+module.exports = mongoose.model("project", projectSchema);

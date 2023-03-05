@@ -14,19 +14,15 @@ components:
       name: auth-token
 
   schemas:
-    Product:
+    Project:
       type: object
       properties:
-        id:
+        title:
           type: string
-        name:
+        members:
           type: string
         description:
           type: string
-        price:
-          type: number
-        inStock:
-          type: boolean
     
     User:
       type: object
@@ -36,8 +32,6 @@ components:
         email:
           type: string
         password:
-          type: string
-        date:
           type: string
 
 paths:
@@ -96,23 +90,23 @@ paths:
                     type: string
 
 
-  /products:
+  /projects:
     get:
-      summary: Retrieves a list of Products
-      description: Retrieves a list of products as JSON objects.
+      summary: Retrieves a list of Projects
+      description: Retrieves a list of projects as JSON objects.
       responses:
         200:
-          description: A list of product JSON objects in an array.
+          description: A list of project JSON objects in an array.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Product"
+                  $ref: "#/components/schemas/Project"
     
     post:
-      summary: Create a new Product
-      description: Create a new Product
+      summary: Create a new Project
+      description: Create a new Project
       security:
         - ApiKeyAuth: []      
       requestBody:
@@ -120,20 +114,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Product"
+              $ref: "#/components/schemas/Project"
 
       responses:
         201:
-          description: Product created succesfully
+          description: Project created succesfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product"
+                $ref: "#/components/schemas/Project"
   
-  /products/{id}:
+  /projects/{id}:
     get:
-      summary: Specific Product
-      description: Retrieves a specific Product based on it id.
+      summary: Specific Project
+      description: Retrieves a specific Project based on it id.
       parameters:
         - in: path
           name: id
@@ -143,17 +137,17 @@ paths:
             type: string
       responses:
         200:
-          description: A Product in the format of a JSON object.
+          description: A Project in the format of a JSON object.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Product"
+                  $ref: "#/components/schemas/Project"
    
     put:
-      summary: Updates a specific Product
-      description: Updates a specific Product based on it id
+      summary: Updates a specific Project
+      description: Updates a specific Project based on it id
       security:
         - ApiKeyAuth: []            
       parameters:
@@ -168,19 +162,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Product"
+              $ref: "#/components/schemas/Project"
 
       responses:
         201:
-          description: Product updated succesfully
+          description: Project updated succesfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product"
+                $ref: "#/components/schemas/Project"
 
     delete:
-      summary: Deletes a specific Product
-      description: Deletes a specific Product based on it id
+      summary: Deletes a specific Project
+      description: Deletes a specific Project based on it id
       security:
         - ApiKeyAuth: []            
       parameters:
@@ -193,8 +187,8 @@ paths:
 
       responses:
         201:
-          description: Product deleted succesfully
+          description: Project deleted succesfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product"
+                $ref: "#/components/schemas/Project"
