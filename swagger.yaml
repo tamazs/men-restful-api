@@ -5,7 +5,20 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:4000/api/
-    description: Localhost development server 
+    description: Localhost development server
+
+tags:
+  - name: User Routes
+    description: Register and login
+  - name: Get Routes
+    description: All get project routes
+  - name: Post Routes
+    description: All create project routes
+  - name: Put Routes
+    description: All update project routes
+  - name: Delete Routes
+    description: All delete project routes
+
 components:
   securitySchemes:
     ApiKeyAuth:        # arbitrary name for the security scheme
@@ -38,6 +51,8 @@ paths:
 
   /user/register:
     post:
+      tags: 
+        - User Routes
       summary: Register a new User
       description: Register a new User in the database
       requestBody:
@@ -62,6 +77,8 @@ paths:
 
   /user/login:
     post:
+      tags: 
+        - User Routes
       summary: Login a User
       description: Login a User in order to get JWT token (auth-token)
       requestBody:
@@ -92,6 +109,8 @@ paths:
 
   /projects:
     get:
+      tags: 
+        - Get Routes
       summary: Retrieves a list of Projects
       description: Retrieves a list of projects as JSON objects.
       responses:
@@ -105,6 +124,8 @@ paths:
                   $ref: "#/components/schemas/Project"
     
     post:
+      tags: 
+        - Post Routes
       summary: Create a new Project
       description: Create a new Project
       security:
@@ -126,6 +147,8 @@ paths:
   
   /projects/{id}:
     get:
+      tags: 
+        - Get Routes
       summary: Specific Project
       description: Retrieves a specific Project based on it id.
       parameters:
@@ -146,6 +169,8 @@ paths:
                   $ref: "#/components/schemas/Project"
    
     put:
+      tags: 
+        - Put Routes
       summary: Updates a specific Project
       description: Updates a specific Project based on it id
       security:
@@ -173,6 +198,8 @@ paths:
                 $ref: "#/components/schemas/Project"
 
     delete:
+      tags: 
+        - Delete Routes
       summary: Deletes a specific Project
       description: Deletes a specific Project based on it id
       security:

@@ -21,7 +21,7 @@ router.post("/", verifyToken, (req, res) => {
 router.get("/", (req, res) => {
 
     project.find()
-    .then(data => { res.send(data); })
+    .then(data => { res.send(mapArray(data)) })
     .catch(err => { res.status(500).send( { message: err.message } ); })
 });
 
@@ -32,6 +32,20 @@ router.get("/public/:status", (req, res) => {
     .then(data => { res.send(data); })
     .catch(err => { res.status(500).send( { message: err.message } ); })
 });
+
+router.get("/random", (req, res) => {
+    //get random project
+    project.countDocuments({})
+    .then(count => {
+        //Get a random number
+        let random = Math.floor(Math.random() * count);
+
+        //Query all documents but fetch only one
+        project.findOne().skip(random)
+        .then(data => { res.send(mapData(data)) })
+        .catch(err => { res.status(500).send( { message: err.message } ); })
+    })
+})
 
 //Read specific - get
 router.get("/:id", (req, res) => {
@@ -74,5 +88,32 @@ router.delete("/:id", verifyToken, (req, res) => {
     })
     .catch(err => { res.status(500).send( { message: "Error deleting project with id=" + id } ); })
 });
+
+function mapArray(inputArray) {
+
+    // do something with inputArray
+    let outputArray = inputArray.map(element => (        
+        mapData(element)        
+    ));
+
+    return outputArray;
+}
+
+function mapData(element) {
+    let outputObj = {
+        id: element._id,
+        title: element.title,
+        members: element.members,
+        description: element.description,
+        createdDate: element.createdDate,
+        public: element.public,
+        active: element.active,
+
+        // add uri (HATEOAS) for this specific resource
+        uri: "/api/products/" + element._id
+    };
+
+    return outputObj;
+};
 
 module.exports = router;
