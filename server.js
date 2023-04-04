@@ -11,6 +11,14 @@ const yaml = require('yamljs');
 const swaggerDefinition = yaml.load('./swagger.yaml');
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDefinition));
 
+//Handle CORS + middleware
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE"); // If using .fetch and not axios
+    res.header("Access-Control-Allow-Headers", "auth-token, Origin, X-Requested-With, Content-Type, Accept");
+    next();
+})
+
 //import routes
 const projectRoutes = require("./routes/project");
 const authRoutes = require("./routes/auth");
