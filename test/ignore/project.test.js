@@ -1,9 +1,9 @@
 const chai = require('chai');
-const Project = require('../models/project');
+const Project = require('../../models/project');
 const chaiHttp = require('chai-http');
 const should = chai.should();
 const expect = chai.expect;
-const server = require('../server');
+const server = require('../../server');
 
 chai.use(chaiHttp);
 

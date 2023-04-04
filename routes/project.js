@@ -6,7 +6,7 @@ const { verifyToken } = require("../validation");
 
 // /api/projects/
 //Create - post
-router.post("/", (req, res) => {
+router.post("/", verifyToken, (req, res) => {
 
     data = req.body;
 
