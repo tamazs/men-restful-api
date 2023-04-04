@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 const chai = require('chai');
 const Project = require('../models/project');
 const chaiHttp = require('chai-http');
@@ -9,15 +7,7 @@ const server = require('../server');
 
 chai.use(chaiHttp);
 
-before((done) => {
-    Project.deleteMany({}, function(err) {});
-    done();
-});
 
-after((done) => {
-    Project.deleteMany({}, function(err) {});
-    done();
-});
 
 describe('/First test collection', () => {
     it('test default welcome API route', (done) => {
