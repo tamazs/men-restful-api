@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 let projectSchema = new Schema(
 {
-    title: {type: String, required: true, min: 2, max: 30},
+    title: {type: String, required: true, min: 2, max: 50},
     members: {type: String},
     description: {type: String},
     createdDate: {type: Date, default: Date.now},
