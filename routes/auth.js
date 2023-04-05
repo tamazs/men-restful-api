@@ -10,7 +10,7 @@ router.post("/register", async(req, res) => {
     const { error } = registerValidation(req.body);
 
     if (error) {
-        return res.status(400).json({ error: error.details[0].message });
+        return res.status(400).json({ error: error.details[0] });
     }
 
     //check if email is already registered

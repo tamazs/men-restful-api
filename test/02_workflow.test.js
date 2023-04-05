@@ -178,7 +178,7 @@ describe('Project workflow tests', () => {
                 //expect(res.status,"Status is not 400 (NOT FOUND)").to.be.equal(400); //custom output message at fail
                 
                 expect(res.body).to.be.a('object');
-                expect(res.body.error.message).to.be.equal("\"password\" length must be at least 6 characters long");  
+                expect(res.body.error.message).to.be.equal("\"password\" length must be at least 6 characters long");
                 done();              
             });
     });

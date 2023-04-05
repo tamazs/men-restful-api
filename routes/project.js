@@ -51,7 +51,7 @@ router.get("/random", (req, res) => {
 router.get("/:id", (req, res) => {
 
     project.findById(req.params.id)
-    .then(data => { res.send(data); })
+    .then(data => { res.send(mapData(data)) })
     .catch(err => { res.status(500).send( { message: err.message } ); })
 });
 
@@ -110,7 +110,7 @@ function mapData(element) {
         active: element.active,
 
         // add uri (HATEOAS) for this specific resource
-        uri: "/api/products/" + element._id
+        uri: "/api/projects/" + element._id
     };
 
     return outputObj;
