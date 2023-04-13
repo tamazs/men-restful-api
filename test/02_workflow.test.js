@@ -68,7 +68,7 @@ describe('Project workflow tests', () => {
 
                                 // 4) Verify one project in test DB
                                 chai.request(server)
-                                    .get('/api/projects/' + res.body._id)
+                                    .get('/api/projects/')
                                     .end((err, res) => {
                                         
                                         // Asserts
