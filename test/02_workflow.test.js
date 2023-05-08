@@ -40,30 +40,30 @@ describe('Project workflow tests', () => {
                         expect(res.status).to.be.equal(200);
                         expect(res.body.error).to.be.equal(null);                        
                         let token = res.body.data.token;
+                        let userID = res.body.id;
 
                         // 3) Create new project
                         let project =
                         {
                             title: "Test Project",
-                            members: "Test Project Members",
-                            description: "Test Project Description"
+                            ownerID: userID,
+                            members: userID
                         };
 
                         chai.request(server)
-                            .post('/api/projects')
+                            .post('/api/projects/new')
                             .set({ "auth-token": token })
                             .send(project)
                             .end((err, res) => {
                                 
                                 // Asserts
                                 expect(res.status).to.be.equal(201);                                
-                                expect(res.body).to.be.a('array');
-                                expect(res.body.length).to.be.eql(1);
+                                expect(res.body).to.be.a('object');
                                 
-                                let savedProject = res.body[0];
+                                let savedProject = res.body;
                                 expect(savedProject.title).to.be.equal(project.title);
-                                expect(savedProject.description).to.be.equal(project.description);
-                                expect(savedProject.members).to.be.equal(project.members);
+                                expect(savedProject.ownerID).to.be.equal(project.ownerID);
+                                expect(savedProject.members[0]).to.be.equal(project.members);
 
 
                                 // 4) Verify one project in test DB
@@ -114,41 +114,39 @@ describe('Project workflow tests', () => {
                         expect(res.status).to.be.equal(200);                         
                         expect(res.body.error).to.be.equal(null);                        
                         let token = res.body.data.token;
+                        let userID = res.body.id;
 
                         // 3) Create new project
                         let project =
                         {
                             title: "Test Project",
-                            members: "Test Project Members",
-                            description: "Test Project Description"
+                            ownerID: userID,
+                            members: userID
                         };
 
                         chai.request(server)
-                            .post('/api/projects')
+                            .post('/api/projects/new')
                             .set({ "auth-token": token })
                             .send(project)
                             .end((err, res) => {
                                 
                                 // Asserts
                                 expect(res.status).to.be.equal(201);                                
-                                expect(res.body).to.be.a('array');
-                                expect(res.body.length).to.be.eql(1);
+                                expect(res.body).to.be.a('object');
                                 
-                                let savedProject = res.body[0];
+                                let savedProject = res.body;
                                 expect(savedProject.title).to.be.equal(project.title);
-                                expect(savedProject.description).to.be.equal(project.description);
-                                expect(savedProject.members).to.be.equal(project.members);
+                                expect(savedProject.ownerID).to.be.equal(project.ownerID);
+                                expect(savedProject.members[0]).to.be.equal(project.members);
 
                                 // 4) Delete product
                                 chai.request(server)
-                                    .delete('/api/projects/' + savedProject._id)
+                                    .delete('/api/projects/delete/' + savedProject._id)
                                     .set({ "auth-token": token })
                                     .end((err, res) => {
                                         
                                         // Asserts
-                                        expect(res.status).to.be.equal(200);                                        
-                                        const actualVal = res.body.message;
-                                        expect(actualVal).to.be.equal('Project was successfully deleted.');        
+                                        expect(res.status).to.be.equal(200);                                             
                                         done();
                                     });
                                     

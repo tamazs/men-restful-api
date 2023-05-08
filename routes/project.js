@@ -43,7 +43,7 @@ router.post('/new', verifyToken, async (req, res) => {
             req.body
         );
         const savedProject = await newProject.save()
-        res.json(savedProject)
+        res.status(201).json(savedProject)
     }
     catch (err) {
         res.status(400).send({
