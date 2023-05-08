@@ -1,15 +1,13 @@
 const mongoose = require("mongoose");
-const task = require("./task")
 
 const Schema = mongoose.Schema;
 
 let projectSchema = new Schema(
 {
     title: {type: String, required: true, min: 2, max: 50},
-    members: {type: [Schema.Types.ObjectId], ref: "User"},
-    tasks: {type: [Schema.Types.ObjectId], ref: "Task"},
-    description: {type: String},
     createdDate: {type: Date, default: Date.now},
+    ownerID: {type: Schema.Types.ObjectId, required: true, ref:'user'},
+    members: [{type: Schema.Types.ObjectId, required: true, ref:'user'}],
     active: {type: Boolean, default: true}
 });
 
