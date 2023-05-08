@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+const states = ["ToDo", "Doing", "Done"];
+
 let taskSchema = new Schema(
 {
     title: {type: String, required: true, min: 2, max: 50},

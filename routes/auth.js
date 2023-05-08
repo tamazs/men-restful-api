@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const { registerValidation, loginValidation } = require('../validation');
+const { registerValidation, loginValidation, verifyToken } = require('../validation');
 const jwt = require('jsonwebtoken');
 
 //registration
@@ -83,6 +83,84 @@ router.post("/login", async(req, res) => {
         id: user._id,
         userType: user.userType
     });
-})
+});
+
+router.put("/:id", verifyToken, async (req, res) => {
+
+    const id = req.params.id;
+    
+
+    User.findByIdAndUpdate(id, req.body)
+        .then(data => {
+            if (!data) {
+                res.status(404).send({
+                    message: "Cannot update user id=" + id
+                })
+            } else {
+                res.send({
+                    message: "user profile is updated"
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "error updating user with id=" + id
+            });
+        });
+
+});
+
+router.put("/updatePass/:id", verifyToken, async (req, res) => {
+
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(req.body.password, salt);
+    req.body.password=password;
+    const id = req.params.id;
+    
+
+    User.findByIdAndUpdate(id, req.body)
+        .then(data => {
+            if (!data) {
+                res.status(404).send({
+                    message: "Cannot update user password" + id
+                })
+            } else {
+                res.send({
+                    message: "Password updated successfully"
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "error updating user with id=" + id
+            });
+        });
+
+});
+
+router.get("/", /*verifyToken,*/ async (req, res) => {
+    try {
+        let data = await User.find();
+        res.send(data);
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message
+        })
+    }
+});
+
+router.get("/:userId", verifyToken, async  (req, res) => {
+    const userId = req.params.userId;
+
+        try{
+                let data = await User.findById(userId);
+
+                res.send((data));
+        }
+        catch(err){
+            res.status(500).send({message: err.message})
+        }
+    });
 
 module.exports = router;
