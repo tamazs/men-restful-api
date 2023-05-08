@@ -76,7 +76,7 @@ router.get("/project/:projectId/tasks", verifyToken, async (req, res) => {
 //Update by id
 router.put('/update/:id', verifyToken, async (req, res) => {
     try {
-        const taskUpdate = await task.updateOne(
+        const taskUpdate = await task.findByIdAndUpdate(
             { _id: req.params.id }, 
             { $set: req.body }
     

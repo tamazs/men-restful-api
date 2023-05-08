@@ -68,7 +68,7 @@ router.get('/get/:id', async (req, res) => {
 //Update by id
 router.put('/update/:id', verifyToken, async (req, res) => {
     try {
-        const projectUpdate = await project.updateOne(
+        const projectUpdate = await project.findByIdAndUpdate(
             { _id: req.params.id }, 
             { $set: req.body }
     
