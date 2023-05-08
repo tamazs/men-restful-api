@@ -21,6 +21,7 @@ app.use(function(req, res, next) {
 
 //import routes
 const projectRoutes = require("./routes/project");
+const taskRoutes = require("./routes/task");
 const authRoutes = require("./routes/auth");
 
 require ("dotenv-flow").config();
@@ -46,6 +47,7 @@ mongoose.connect(
 mongoose.connection.once("open", () => console.log("Connected successfully to MongoDB"));
 
 //post, put, delete -> CRUD
+app.use("/api/tasks", taskRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/user", authRoutes);
 

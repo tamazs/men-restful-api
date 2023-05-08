@@ -1,15 +1,12 @@
-const router = require("express").Router();
-const project = require("../models/project");
-const { verifyToken } = require("../validation");
+const express = require('express');
+const router = express.Router();
+const task = require('../models/task');
 
-//CRUD operations
-
-// /api/projects/
-//Get all
+//Get all todos
 router.get('/', async (req, res) => {
     try {
-        const projects = await project.find();
-        res.json(projects)
+        const tasks = await task.find();
+        res.json(tasks)
     }
     catch {
         res.status(400)
@@ -20,11 +17,11 @@ router.get('/', async (req, res) => {
 //Create new task
 router.post('/new', async (req, res) => {
     try {
-        const newProject = new project(
+        const newTask = new task(
             req.body
         );
-        const savedProject = await newProject.save()
-        res.json(savedProject)
+        const savedTask = await newTask.save()
+        res.json(savedTask)
     }
     catch {
         res.status(400)
@@ -35,8 +32,8 @@ router.post('/new', async (req, res) => {
 //Get by id
 router.get('/get/:id', async (req, res) => {
     try {
-        const projects = await project.findById({ _id : req.params.id })
-        res.json(projects)
+        const tasks = await task.findById({ _id : req.params.id })
+        res.json(tasks)
     }
     catch {
         res.status(400)
@@ -47,12 +44,12 @@ router.get('/get/:id', async (req, res) => {
 //Update by id
 router.put('/update/:id', async (req, res) => {
     try {
-        const projectUpdate = await project.updateOne(
+        const taskUpdate = await task.updateOne(
             { _id: req.params.id }, 
             { $set: req.body }
     
         )
-        res.json(projectUpdate)
+        res.json(taskUpdate)
     }
     catch {
         res.status(400)
@@ -62,8 +59,8 @@ router.put('/update/:id', async (req, res) => {
 //Delete by id
 router.delete('/delete/:id', async (req, res) => {
     try {
-        const projectDelete = await project.findByIdAndDelete({ _id : req.params.id })
-        res.json(projectDelete)
+        const taskDelete = await task.findByIdAndDelete({ _id : req.params.id })
+        res.json(taskDelete)
     }
     catch {
         res.status(400)
