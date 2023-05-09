@@ -59,7 +59,7 @@ router.get("/:userId", verifyToken, async (req, res) => {
     }
 });
 
-router.get("/project/:projectId/tasks", verifyToken, async (req, res) => {
+router.get("/:projectId/tasks", verifyToken, async (req, res) => {
     const projectId = req.params.projectId;
 
     try {

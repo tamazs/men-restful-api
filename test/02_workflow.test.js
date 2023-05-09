@@ -76,87 +76,52 @@ describe('Project workflow tests', () => {
                                         expect(res.body).to.be.a('array');                                
                                         expect(res.body.length).to.be.eql(1);
                                 
-                                        done();
+                                        // 3) Create new task
+                                        let valami = res.body._id
+                                        let task =
+                                        {
+                                            title: "Test Task",
+                                            assignedTo: userID,
+                                            projectID: valami
+                                        };
+
+                                        chai.request(server)
+                                            .post('/api/tasks/new')
+                                            .set({ "auth-token": token })
+                                            .send(task)
+                                            .end((err, res) => {
+                                                
+                                                // Asserts
+                                                expect(res.status).to.be.equal(200);                                
+                                                expect(res.body).to.be.a('object');
+                                                
+                                                let savedTask = res.body;
+                                                expect(savedTask.title).to.be.equal(task.title);
+                                                expect(savedTask.assignedTo).to.be.equal(task.assignedTo);
+                                                expect(savedTask.projectID).to.be.equal(task.projectID);
+
+                                                
+                                                // 4) Verify task in test DB
+                                                
+                                                chai.request(server)
+                                                    .get('/api/tasks/' + valami + '/tasks')
+                                                    .set({ "auth-token": token })
+                                                    .end((err, res) => {
+                                                        
+                                                        // Asserts
+                                                        expect(res.status).to.be.equal(200);                                
+                                                        expect(res.body).to.be.a('array');                                
+                                                        expect(res.body.length).to.be.eql(1);
+                                                
+                                                        done();
+                                                    });
+                                                    });
+                                                })
+                                            });
                                     });
                             });
                     });
-            });
-    });
-
-    it('should register + login a user, create a task and verify in DB', (done) => {
-
-        // 1) Register new user
-        let user = {
-            name: "Peter McLovin",
-            email: "mail@mclovin.com",
-            password: "123456"
-        }
-        chai.request(server)
-            .post('/api/user/register')
-            .send(user)
-            .end((err, res) => {
-                
-                // Asserts
-                expect(res.status).to.be.equal(200);   
-                expect(res.body).to.be.a('object');
-                expect(res.body.error).to.be.equal(null);
-               
-                // 2) Login the user
-                chai.request(server)
-                    .post('/api/user/login')
-                    .send({
-                        "email": "mail@mclovin.com",
-                        "password": "123456"
-                    })
-                    .end((err, res) => {
-                        // Asserts                        
-                        expect(res.status).to.be.equal(200);
-                        expect(res.body.error).to.be.equal(null);                        
-                        let token = res.body.data.token;
-                        let userID = res.body.id;
-
-                        // 3) Create new task
-                        let task =
-                        {
-                            title: "Test Task",
-                            assignedTo: userID,
-                            projectID: "64596cb734b40b6530ba0391"
-                        };
-
-                        chai.request(server)
-                            .post('/api/tasks/new')
-                            .set({ "auth-token": token })
-                            .send(task)
-                            .end((err, res) => {
-                                
-                                // Asserts
-                                expect(res.status).to.be.equal(200);                                
-                                expect(res.body).to.be.a('object');
-                                
-                                let savedTask = res.body;
-                                expect(savedTask.title).to.be.equal(task.title);
-                                expect(savedTask.assignedTo).to.be.equal(task.assignedTo);
-                                expect(savedTask.projectID).to.be.equal(task.projectID);
-
-
-                                // 4) Verify task in test DB
-                                chai.request(server)
-                                    .get('/api/tasks/project/64596cb734b40b6530ba0391/tasks')
-                                    .set({ "auth-token": token })
-                                    .end((err, res) => {
-                                        
-                                        // Asserts
-                                        expect(res.status).to.be.equal(200);                                
-                                        expect(res.body).to.be.a('array');                                
-                                        expect(res.body.length).to.be.eql(1);
-                                
-                                        done();
-                                    });
-                            });
-                    });
-            });
-    });
-
+    
     // Valid input test (register, login, )
     it('should register + login a user, create project and delete it from DB', (done) => {
 
@@ -223,7 +188,6 @@ describe('Project workflow tests', () => {
                                         expect(res.status).to.be.equal(200);                                             
                                         done();
                                     });
-                                    
                             });
                     });
             });
