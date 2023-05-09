@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 })
 
 //Get user projects
-router.get("/:userId/", verifyToken, async (req, res) => {
+router.get("/:userId", verifyToken, async (req, res) => {
     const userId = req.params.userId;
 
     try {
