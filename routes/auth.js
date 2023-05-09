@@ -64,16 +64,28 @@ router.post("/login", async(req, res) => {
         return res.status(400).json({ error: "Wrong password" });
     }
 
-    //create authentication token with username and id
+    //create authentication token
     const token = jwt.sign({
         name: user.name,
-        id: user._id,
-        email: user.email,
-        userType: user.userType
+        id: user._id
     },
     process.env.TOKEN_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN }    
     );
+
+    //create refresh token
+    const refreshToken = jwt.sign({
+        name: user.name,
+        id: user._id
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: process.env.REFRESH_JWT_EXPIRES_IN }    
+    );
+
+    //assigning refresh token in http-only cookie
+    res.cookie('jwt', refreshToken, { httpOnly: true, 
+        sameSite: 'None', secure: true, 
+        maxAge: 24 * 60 * 60 * 1000 });
 
     //attach auth token to header
     res.header("auth-token", token).json({
@@ -84,6 +96,45 @@ router.post("/login", async(req, res) => {
         userType: user.userType
     });
 });
+
+router.post('/refresh', (req, res) => {
+    if (req.cookies?.jwt) {
+  
+        // Destructuring refreshToken from cookie
+        const refreshToken = req.cookies.jwt;
+  
+        // Verifying refresh token
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, 
+        (err, decoded) => {
+            if (err) {
+  
+                // Wrong Refesh Token
+                return res.status(406).json({ message: 'Unauthorized' });
+            }
+            else {
+                const user = User.findOne({ email: req.body.email });
+                // Correct token we send a new access token
+                const token = jwt.sign({
+                    name: user.name,
+                    id: user._id
+                },
+                process.env.TOKEN_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }    
+                );
+                
+                res.header("auth-token", token).json({
+                    error: null,
+                    data: { token },
+                    name: user.name,
+                    id: user._id,
+                    userType: user.userType
+                });
+            }
+        })
+    } else {
+        return res.status(406).json({ message: 'Unauthorized' });
+    }
+})
 
 router.put("/:id", verifyToken, async (req, res) => {
 
