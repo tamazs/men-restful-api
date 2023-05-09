@@ -77,7 +77,7 @@ describe('Project workflow tests', () => {
                                         expect(res.body.length).to.be.eql(1);
                                 
                                         // 3) Create new task
-                                        let valami = res.body._id
+                                        let valami = res.body[0]._id
                                         let task =
                                         {
                                             title: "Test Task",
