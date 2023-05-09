@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cookieparser = require('cookie-parser');
 const app = express();
 
 //swagger
@@ -28,6 +29,7 @@ require ("dotenv-flow").config();
 
 //parse request of content type JSON
 app.use(bodyParser.json());
+app.use(cookieparser());
 
 //route
 app.get("/api/welcome", (req, res) => {

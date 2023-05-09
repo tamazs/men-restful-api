@@ -35,6 +35,8 @@ jobs:
           DBHOST: ${{ secrets.DBHOST }}
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
           JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+          REFRESH_TOKEN_SECRET: ${{ secrets.REFRESH_TOKEN_SECRET }}
+          REFRESH_JWT_EXPIRES_IN: ${{ secrets.REFRESH_JWT_EXPIRES_IN }}
 
 
   # Heavily modified deploy job to fit render.com
