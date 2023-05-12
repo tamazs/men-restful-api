@@ -77,12 +77,12 @@ describe('Project workflow tests', () => {
                                         expect(res.body.length).to.be.eql(1);
                                 
                                         // 3) Create new task
-                                        let valami = res.body[0]._id
+                                        let projectId = res.body[0]._id
                                         let task =
                                         {
                                             title: "Test Task",
                                             assignedTo: userID,
-                                            projectID: valami
+                                            projectID: projectId
                                         };
 
                                         chai.request(server)
@@ -104,7 +104,7 @@ describe('Project workflow tests', () => {
                                                 // 4) Verify task in test DB
                                                 
                                                 chai.request(server)
-                                                    .get('/api/tasks/' + valami + '/tasks')
+                                                    .get('/api/tasks/' + projectId + '/tasks')
                                                     .set({ "auth-token": token })
                                                     .end((err, res) => {
                                                         
