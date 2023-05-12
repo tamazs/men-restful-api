@@ -59,11 +59,27 @@ router.get("/:userId", verifyToken, async (req, res) => {
     }
 });
 
-router.get("/:projectId/tasks", verifyToken, async (req, res) => {
+router.get("/:projectId", verifyToken, async (req, res) => {
     const projectId = req.params.projectId;
 
     try {
         let data = await task.find().where('projectID').equals(projectId);
+        res.send(data)
+
+    } catch (err) {
+        res.status(400).send({
+            message: err.message
+        })
+    }
+});
+
+router.get("/:projectId/:state", verifyToken, async (req, res) => {
+    const projectId = req.params.projectId;
+    const state = req.params.state;
+
+    try {
+        let data = await task.find({ state: state }).where('projectID').equals(projectId);
+
         res.send(data)
 
     } catch (err) {

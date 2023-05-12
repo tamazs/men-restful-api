@@ -95,4 +95,20 @@ router.delete('/delete/:id', verifyToken, async (req, res) => {
     }
 })
 
+/*router.delete("/delete/:projectId/member/:memberId", verifyToken, async (req, res) => {
+    const projectId = req.params.projectId;
+    const memberId = req.params.memberId;
+
+    try {
+        let data = await task.findByIdAndDelete({ members['_id']: memberId }).where('projectID').equals(projectId);
+
+        res.send(data)
+
+    } catch (err) {
+        res.status(400).send({
+            message: err.message
+        })
+    }
+});*/
+
 module.exports = router
