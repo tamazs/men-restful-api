@@ -104,7 +104,7 @@ describe('Project workflow tests', () => {
                                                 // 4) Verify task in test DB
                                                 
                                                 chai.request(server)
-                                                    .get('/api/tasks/' + projectId + '/tasks')
+                                                    .get('/api/tasks/' + projectId + '/ToDo')
                                                     .set({ "auth-token": token })
                                                     .end((err, res) => {
                                                         
