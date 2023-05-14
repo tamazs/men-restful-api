@@ -82,6 +82,23 @@ router.put('/update/:id', verifyToken, async (req, res) => {
     }
 })
 
+//Update by id
+router.put('/update/:id/done', verifyToken, async (req, res) => {
+    try {
+        const projectActiveUpdate = await project.findByIdAndUpdate(
+            { _id: req.params.id },
+            { active: false }
+
+        )
+        res.json(projectActiveUpdate)
+    }
+    catch (err) {
+        res.status(400).send({
+            message: err.message
+        })
+    }
+})
+
 //Delete by id
 router.delete('/delete/:id', verifyToken, async (req, res) => {
     try {

@@ -106,6 +106,25 @@ router.put('/update/:id', verifyToken, async (req, res) => {
     }
 })
 
+router.put('/update/:id/:state', verifyToken, async (req, res) => {
+    const taskId = req.params.id;
+    const state = req.params.state;
+
+    try {
+        const taskStateUpdate = await task.findByIdAndUpdate(
+            { _id: taskId },
+            { state: state }
+
+        )
+        res.json(taskStateUpdate)
+    }
+    catch (err) {
+        res.status(400).send({
+            message: err.message
+        })
+    }
+})
+
 //Delete by id
 router.delete('/delete/:id', verifyToken, async (req, res) => {
     try {
