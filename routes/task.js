@@ -76,7 +76,7 @@ router.get("/:projectId", verifyToken, async (req, res) => {
 });
 
 //Get all tasks of a project of a user
-router.get("/:projectId/:userId", verifyToken, async (req, res) => {
+router.get("/:projectId/user/:userId", verifyToken, async (req, res) => {
     const projectId = req.params.projectId;
     const userId = req.params.userId;
 
