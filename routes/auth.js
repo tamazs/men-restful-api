@@ -82,6 +82,8 @@ router.post("/login", async(req, res) => {
         userType: user.userType
     });
 })
+
+//Update user by ID
 router.put("/:id", verifyToken, async (req, res) => {
 
     const id = req.params.id;
@@ -107,6 +109,7 @@ router.put("/:id", verifyToken, async (req, res) => {
 
 });
 
+//Update password by ID
 router.put("/updatePass/:id", verifyToken, async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
@@ -135,6 +138,7 @@ router.put("/updatePass/:id", verifyToken, async (req, res) => {
 
 });
 
+//Get all users
 router.get("/", /*verifyToken,*/ async (req, res) => {
     try {
         let data = await User.find();
@@ -147,6 +151,7 @@ router.get("/", /*verifyToken,*/ async (req, res) => {
     }
 });
 
+//Get user by ID
 router.get("/:userId", verifyToken, async  (req, res) => {
     const userId = req.params.userId;
 

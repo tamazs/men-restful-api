@@ -45,6 +45,7 @@ router.get('/get/:id', async (req, res) => {
     }
 })
 
+//Get all tasks of a user by userID
 router.get("/:userId", verifyToken, async (req, res) => {
     const userId = req.params.userId;
 
@@ -59,6 +60,7 @@ router.get("/:userId", verifyToken, async (req, res) => {
     }
 });
 
+//Get all tasks of a project
 router.get("/:projectId", verifyToken, async (req, res) => {
     const projectId = req.params.projectId;
 
@@ -73,6 +75,23 @@ router.get("/:projectId", verifyToken, async (req, res) => {
     }
 });
 
+//Get all tasks of a project of a user
+router.get("/:projectId/:userId", verifyToken, async (req, res) => {
+    const projectId = req.params.projectId;
+    const userId = req.params.userId;
+
+    try {
+        let data = await task.find({ assignedTo: userId }).where('projectID').equals(projectId);
+        res.send(data)
+
+    } catch (err) {
+        res.status(400).send({
+            message: err.message
+        })
+    }
+});
+
+//Get all tasks of a project based on state
 router.get("/:projectId/:state", verifyToken, async (req, res) => {
     const projectId = req.params.projectId;
     const state = req.params.state;
@@ -106,6 +125,7 @@ router.put('/update/:id', verifyToken, async (req, res) => {
     }
 })
 
+//Update task state by taskID
 router.put('/update/:id/:state', verifyToken, async (req, res) => {
     const taskId = req.params.id;
     const state = req.params.state;

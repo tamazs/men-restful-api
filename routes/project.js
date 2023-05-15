@@ -82,7 +82,7 @@ router.put('/update/:id', verifyToken, async (req, res) => {
     }
 })
 
-//Update by id
+//Update to done by id
 router.put('/update/:id/done', verifyToken, async (req, res) => {
     try {
         const projectActiveUpdate = await project.findByIdAndUpdate(
