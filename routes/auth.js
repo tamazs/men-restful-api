@@ -28,7 +28,7 @@ router.post("/register", async(req, res) => {
     const userObject = new User({
         name: req.body.name,
         email: req.body.email,
-        password
+        password: password
     });
 
     try {
@@ -87,7 +87,7 @@ router.post("/login", async(req, res) => {
 router.put("/:id", verifyToken, async (req, res) => {
 
     const id = req.params.id;
-    
+
 
     User.findByIdAndUpdate(id, req.body)
         .then(data => {
@@ -116,7 +116,7 @@ router.put("/updatePass/:id", verifyToken, async (req, res) => {
     const password = await bcrypt.hash(req.body.password, salt);
     req.body.password=password;
     const id = req.params.id;
-    
+
 
     User.findByIdAndUpdate(id, req.body)
         .then(data => {
@@ -155,14 +155,14 @@ router.get("/", /*verifyToken,*/ async (req, res) => {
 router.get("/:userId", verifyToken, async  (req, res) => {
     const userId = req.params.userId;
 
-        try{
-                let data = await User.findById(userId);
+    try{
+        let data = await User.findById(userId);
 
-                res.send((data));
-        }
-        catch(err){
-            res.status(500).send({message: err.message})
-        }
-    });
+        res.send((data));
+    }
+    catch(err){
+        res.status(500).send({message: err.message})
+    }
+});
 
 module.exports = router;
