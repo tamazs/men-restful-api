@@ -4,11 +4,10 @@ const Schema = mongoose.Schema;
 
 let projectSchema = new Schema(
 {
-    title: {type: String, required: true, min: 2, max: 50},
+    title: {type: String, required: true, min: 5, max: 50},
     createdDate: {type: Date, default: Date.now},
-    ownerID: {type: Schema.Types.ObjectId, required: true, ref:'user'},
-    members: [{type: Schema.Types.ObjectId, required: true, ref:'user'}],
-    active: {type: Boolean, default: true}
+    ownerID: {type: Schema.Types.ObjectId, ref:'user'},
+    members: [{type: Schema.Types.ObjectId, ref:'user'}],
 });
 
 projectSchema.pre('findOneAndUpdate', function() {

@@ -76,37 +76,39 @@ router.post("/login", async(req, res) => {
     //attach auth token to header
     res.header("auth-token", token).json({
         error: null,
-        data: { token },
-        name: user.name,
-        id: user._id,
-        userType: user.userType
+        data: { token,
+                name: user.name,
+                email: user.email,
+                id: user._id,
+                userType: user.userType
+        }
     });
 })
 
 //Update user by ID
 router.put("/:id", verifyToken, async (req, res) => {
-
     const id = req.params.id;
 
-
     User.findByIdAndUpdate(id, req.body)
-        .then(data => {
-            if (!data) {
+        .then(async () => {
+            const updatedUser = await User.findById(id);
+            if (!updatedUser) {
                 res.status(404).send({
-                    message: "Cannot update user id=" + id
-                })
+                    message: "Cannot find user with id=" + id,
+                });
             } else {
                 res.send({
-                    message: "user profile is updated"
-                })
+                    message: "User profile is updated",
+                    name: updatedUser.name,
+                    email: updatedUser.email,
+                });
             }
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(500).send({
-                message: "error updating user with id=" + id
+                message: "Error updating user with id=" + id,
             });
         });
-
 });
 
 //Update password by ID
