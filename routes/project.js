@@ -89,7 +89,7 @@ router.put('/add-member/:id', verifyToken, async (req, res) => {
 
 
 //Get by id
-router.get('/get/:id', async (req, res) => {
+router.get('/get/:id', verifyToken, async (req, res) => {
     try {
         const projects = await project.findById({ _id : req.params.id })
         res.json(projects)

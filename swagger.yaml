@@ -10,16 +10,14 @@ servers:
     description: Remote deployment on Render
 
 tags:
-  - name: User Routes
+  - name: Auth Routes
     description: Register and login
-  - name: Get Routes
-    description: All get project routes
-  - name: Post Routes
-    description: All create project routes
-  - name: Put Routes
-    description: All update project routes
-  - name: Delete Routes
-    description: All delete project routes
+  - name: User Routes
+    description: All user routes
+  - name: Project Routes
+    description: All project routes
+  - name: Task Routes
+    description: All task routes
 
 components:
   securitySchemes:
@@ -35,8 +33,8 @@ components:
         title:
           type: string
         members:
-          type: string
-        description:
+          type: array
+        ownerID:
           type: string
     
     User:
@@ -49,12 +47,26 @@ components:
         password:
           type: string
 
+    Task:
+      type: object
+      properties:
+        title:
+          type: string
+        detail:
+          type: string
+        assignedTo:
+          type: string
+        projectID:
+          type: string
+        state:
+          type: string
+
 paths:
 
   /user/register:
     post:
       tags: 
-        - User Routes
+        - Auth Routes
       summary: Register a new User
       description: Register a new User in the database
       requestBody:
@@ -80,7 +92,7 @@ paths:
   /user/login:
     post:
       tags: 
-        - User Routes
+        - Auth Routes
       summary: Login a User
       description: Login a User in order to get JWT token (auth-token)
       requestBody:
@@ -112,7 +124,7 @@ paths:
   /projects:
     get:
       tags: 
-        - Get Routes
+        - Project Routes
       summary: Retrieves a list of Projects
       description: Retrieves a list of projects as JSON objects.
       responses:
@@ -124,10 +136,11 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Project"
-    
+
+  /projects/new:
     post:
       tags: 
-        - Post Routes
+        - Project Routes
       summary: Create a new Project
       description: Create a new Project
       security:
@@ -150,14 +163,16 @@ paths:
   /projects/{id}:
     get:
       tags: 
-        - Get Routes
+        - Project Routes
       summary: Specific Project
       description: Retrieves a specific Project based on it id.
+      security:
+        - ApiKeyAuth: []
       parameters:
         - in: path
           name: id
           required: true
-          description: MongoDB id
+          description: MongoDB projectID
           schema:
             type: string
       responses:
@@ -169,19 +184,45 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Project"
-   
+
+  /projects/{userId}:
+    get:
+      tags: 
+        - Project Routes
+      summary: User Projects
+      description: Retrieves Projects of a user.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: MongoDB userID
+          schema:
+            type: string
+      responses:
+        200:
+          description: User projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+
+  /projects/add-member/{id}: 
     put:
       tags: 
-        - Put Routes
-      summary: Updates a specific Project
-      description: Updates a specific Project based on it id
+        - Project Routes
+      summary: Adds member to a Project
+      description: Updates a specific Project by adding a member to it by id
       security:
         - ApiKeyAuth: []            
       parameters:
         - in: path
           name: id
           required: true
-          description: MongoDB id
+          description: MongoDB projectID
           schema:
             type: string
       requestBody:
@@ -189,35 +230,446 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Project"
+              properties:
+                email:
+                  type: string
 
       responses:
-        201:
-          description: Project updated succesfully
+        200:
+          description: Member added successfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Project"
 
+  /projects/members/{id}:
+    get:
+      tags: 
+        - Project Routes
+      summary: Project members
+      description: Retrieves members of a Project.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string
+      responses:
+        200:
+          description: Members of Project.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+
+  /projects/members/{id}/{memberId}:
+    get:
+      tags: 
+        - Project Routes
+      summary: Get specific member of Project
+      description: Retrieves a specific member of Project.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string
+        - in: path
+          name: memberId
+          required: true
+          description: MongoDB memberID of project
+          schema:
+            type: string
+      responses:
+        200:
+          description: Member of a Project.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /projects/delete-member/{id}/{memberId}:
     delete:
       tags: 
-        - Delete Routes
-      summary: Deletes a specific Project
-      description: Deletes a specific Project based on it id
+        - Project Routes
+      summary: Deletes a specific member of Project
+      description: Deletes a specific member of Project based on its id
       security:
         - ApiKeyAuth: []            
       parameters:
         - in: path
           name: id
           required: true
-          description: MongoDB id
+          description: MongoDB projectID
           schema:
-            type: string      
+            type: string
+        - in: path
+          name: memberId
+          required: true
+          description: MongoDB memberID of project
+          schema:
+            type: string    
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string  
 
       responses:
-        201:
+        200:
+          description: Member of Project deleted succesfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /projects/delete/{id}:
+    delete:
+      tags: 
+        - Project Routes
+      summary: Deletes a specific Project
+      description: Deletes a specific Project based on its id
+      security:
+        - ApiKeyAuth: []            
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string  
+
+      responses:
+        200:
           description: Project deleted succesfully
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Project"
+
+  /user/{id}:
+    put:
+      tags: 
+        - User Routes
+      summary: Update User by ID
+      description: Update User by ID
+      security:
+        - ApiKeyAuth: []      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+
+      responses:
+        200:
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /user/updatePass/{id}:
+    put:
+      tags: 
+        - User Routes
+      summary: Update User password by ID
+      description: Update User password by ID
+      security:
+        - ApiKeyAuth: []      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+
+      responses:
+        200:
+          description: User password updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /user/{id}:
+    get:
+      tags: 
+        - User Routes
+      summary: Get User by ID
+      description: Get User by ID
+      security:
+        - ApiKeyAuth: []      
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB userID
+          schema:
+            type: string  
+
+      responses:
+        200:
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /user/:
+    get:
+      tags: 
+        - User Routes
+      summary: Get all Users
+      description: Get all Users
+      security:
+        - ApiKeyAuth: []      
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB userID
+          schema:
+            type: string  
+
+      responses:
+        200:
+          description: Users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /tasks/:
+    get:
+      tags: 
+        - Task Routes
+      summary: Get all Tasks
+      description: Get all Tasks
+      security:
+        - ApiKeyAuth: []      
+
+      responses:
+        200:
+          description: Tasks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/new:
+    post:
+      tags: 
+        - Task Routes
+      summary: Create new Task
+      description: Create new Task
+      security:
+        - ApiKeyAuth: []      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+
+      responses:
+        201:
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/get/{id}/{taskId}:
+    get:
+      tags: 
+        - Task Routes
+      summary: Get specific Task
+      description: Get specific Task in project
+      security:
+        - ApiKeyAuth: []    
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string
+        - in: path
+          name: taskId
+          required: true
+          description: MongoDB taskID in a project
+          schema:
+            type: string      
+
+      responses:
+        200:
+          description: Task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}/user/{userId}:
+    get:
+      tags: 
+        - Task Routes
+      summary: Get Tasks of a User
+      description: Get Tasks of a User
+      security:
+        - ApiKeyAuth: []    
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          description: MongoDB userID
+          schema:
+            type: string      
+
+      responses:
+        200:
+          description: Tasks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}/{state}:
+    get:
+      tags: 
+        - Task Routes
+      summary: Get Tasks of a Project based on state
+      description: Get Tasks of a Project based on state
+      security:
+        - ApiKeyAuth: []    
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string
+        - in: path
+          name: state
+          required: true
+          description: ToDo/Doing/Done
+          schema:
+            type: string      
+
+      responses:
+        200:
+          description: Tasks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/update/{id}:
+    put:
+      tags: 
+        - Task Routes
+      summary: Update Task
+      description: Update Task
+      security:
+        - ApiKeyAuth: [] 
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB taskID
+          schema:
+            type: string     
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+
+      responses:
+        200:
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/updateState/{projectId}/{id}/{state}:
+    put:
+      tags: 
+        - Task Routes
+      summary: Update Task
+      description: Update Task
+      security:
+        - ApiKeyAuth: [] 
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          description: MongoDB taskID
+          schema:
+            type: string  
+        - in: path
+          name: state
+          required: true
+          description: ToDo/Doing/Done
+          schema:
+            type: string       
+
+      responses:
+        200:
+          description: Task state updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/delete/{id}:
+    delete:
+      tags: 
+        - Task Routes
+      summary: Delete Task
+      description: Delete Task by id
+      security:
+        - ApiKeyAuth: [] 
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB taskID
+          schema:
+            type: string     
+
+      responses:
+        200:
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
