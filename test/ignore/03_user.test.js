@@ -5,10 +5,9 @@ const server = require('../server');
 
 chai.use(chaiHttp);
 
-var userID;
-var token;
-
 describe('Auth tests', () => {
+    var userID;
+    var token;
     // POST Create functional test
     it('register and login user', (done) => {
         // 1) Register new user
@@ -48,12 +47,14 @@ describe('Auth tests', () => {
     it('should update user', (done) => {
         // 1) Register new user
         let updatedUser = {
-            name: "Peterson McLovin",
+            "name": "Peterson McLovin"
         };
         chai.request(server)
             .put('/api/user/' + userID)
+            .set({ "auth-token": token })
             .send(updatedUser)
             .end((err, res) => {
+                console.log(res.body)
                 // Asserts
                 expect(res.status).to.be.equal(200);
                 expect(res.body).to.be.a('object');

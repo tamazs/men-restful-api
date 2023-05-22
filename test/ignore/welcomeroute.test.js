@@ -41,24 +41,3 @@ describe('/First Test Collection', () => {
         done();
     })
 })
-
-
-
-// Update user
-let user =
-    {
-        email: "mail2@mclovin.com",
-    };
-
-chai.request(server)
-    .put('/api/user/' + userID)
-    .set({"auth-token": token})
-    .send(user)
-    .end((err, res) => {
-
-        // Asserts
-        expect(res.status).to.be.equal(200);
-        expect(res.body).to.be.a('object');
-
-        let updatedUser = res.body;
-        expect(updatedUser.email).to.be.equal(user.email); })
