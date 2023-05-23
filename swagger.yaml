@@ -210,6 +210,38 @@ paths:
                 items:
                   $ref: "#/components/schemas/Project"
 
+  /projects/update/{id}:
+    put:
+      tags:
+        - Project Routes
+      summary: Updates a Project
+      description: Updates a specific Project by id
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: MongoDB projectID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  type: string
+
+      responses:
+        200:
+          description: Project updated added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
   /projects/add-member/{id}: 
     put:
       tags: 
@@ -318,15 +350,7 @@ paths:
           required: true
           description: MongoDB memberID of project
           schema:
-            type: string    
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                email:
-                  type: string  
+            type: string
 
       responses:
         200:
@@ -373,7 +397,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
 
       responses:
         200:
@@ -396,7 +424,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              properties:
+                password:
+                  type: string
 
       responses:
         200:
